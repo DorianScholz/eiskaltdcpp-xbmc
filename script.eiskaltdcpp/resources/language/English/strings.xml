@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">EiskaltDC++</string>
+
+    <string id="1">Connecting to EiskaltDC++</string>
+    <string id="2">EiskaltDC++ Error</string>
+    <string id="3">Open settings dialog?</string>
+
+    <!-- Buttons -->
+    <string id="101">Search</string>
+    <string id="102">Remove</string>
+    <string id="107">Exit</string>
+
+    <!-- Search -->
+    <string id="202">Search</string>
+    <string id="290">Searching...</string>
+    <string id="291">No results found</string>
+
+    <!-- Settings -->
+    <string id="1000">RPC Settings</string>
+    <string id="1001">Host</string>
+    <string id="1002">Port</string>
+
+    <!-- Errors -->
+    <string id="9000">An unexpected error occurred</string>
+    <string id="9001">Could not connect to EiskaltDC++</string>
+    <string id="9002">Invalid setting value. Status is: </string>
+</strings>
