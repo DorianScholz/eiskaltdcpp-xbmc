@@ -14,14 +14,20 @@ class EiskaltDCPP(object):
         try:
             hub_list = self._http_client('hub.list', separator=';')
         except Exception as e:
-            return 'error (%s)' % str(e)
+            return 'connection error: %s' % str(e)
+
         hubs = [hub for hub in hub_list.split(';') if hub != '']
         if len(hubs) > 0:
             return 'connected'
-        return 'not connected'
+        return 'not connected to any hubs'
 
     def getTransfers(self):
-        transfer_list = self._http_client('queue.list')
+        try:
+            transfer_list = self._http_client('queue.list')
+        except Exception as e:
+            print 'connection error:', str(e)
+            return None
+
         transfers = {}
         if transfer_list is not None:
             for item in transfer_list.values():
@@ -36,10 +42,24 @@ class EiskaltDCPP(object):
         return transfers
 
     def search(self, search_string):
-        self._http_client('search.clear')
-        self._http_client('search.send', searchstring=search_string)
+        try:
+            self._http_client('search.clear')
+            self._http_client('search.send', searchstring=search_string)
+        except Exception as e:
+            print 'connection error:', str(e)
+            return None
+
         sleep(2.0)
-        result_list = self._http_client('search.getresults')
+
+        try:
+            result_list = self._http_client('search.getresults')
+        except Exception as e:
+            print 'connection error:', str(e)
+            return None
+
+        if result_list is None:
+            result_list = []
+
         results = {}
         for result in result_list:
             if 'TTH' in result:
@@ -56,10 +76,18 @@ class EiskaltDCPP(object):
         return results.values()
 
     def addDownload(self, search_result):
-        self._http_client('queue.add', filename=search_result['filename'], tth=search_result['tth'], size=search_result['realsize'], directory='')
+        try:
+            self._http_client('queue.add', filename=search_result['filename'], tth=search_result['tth'], size=search_result['realsize'], directory='')
+        except Exception as e:
+            print 'connection error:', str(e)
+            return None
 
     def removeTransfer(self, target):
-        self._http_client('queue.remove', target=target)
+        try:
+            self._http_client('queue.remove', target=target)
+        except Exception as e:
+            print 'connection error:', str(e)
+            return None
 
 
 if __name__ == '__main__':
