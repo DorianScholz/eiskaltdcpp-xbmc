@@ -4,6 +4,18 @@ from time import sleep
 from jsonrpclib import Server
 
 class EiskaltDCPP(object):
+    search_types = {
+        'ANY': 0,
+        'AUDIO': 1,
+        'COMPRESSED': 2,
+        'DOCUMENT': 3,
+        'EXECUTABLE': 4,
+        'PICTURE': 5,
+        'VIDEO': 6,
+        'DIRECTORY': 7,
+        'TTH': 8,
+        'CD_IMAGE': 9
+    }
 
     def __init__(self, host='127.0.0.1', port=3121, path=''):
         url = 'http://%s:%s/%s' % (host, port, path)
@@ -49,10 +61,11 @@ class EiskaltDCPP(object):
                 }
         return transfers
 
-    def search(self, search_string):
+    def search(self, search_string, search_type=None):
         try:
             self._http_client.search.clear()
-            self._http_client.search.send(searchstring=search_string)
+            search_type = self.search_types.get(search_type.upper(), self.search_types['ANY'])
+            self._http_client.search.send(searchstring=search_string, searchtype=search_type)
         except Exception as e:
             print 'connection error:', str(e)
             return None
@@ -86,6 +99,7 @@ class EiskaltDCPP(object):
     def addDownload(self, search_result):
         try:
             self._http_client.queue.add(filename=search_result['filename'], tth=search_result['tth'], size=search_result['realsize'], directory='')
+            self._http_client.search.send(searchstring=search_result['tth'], searchtype=self.search_types['TTH'])
         except Exception as e:
             print 'connection error:', str(e)
             return None
